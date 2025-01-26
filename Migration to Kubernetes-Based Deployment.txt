@@ -1,0 +1,232 @@
+Project Structure Overview
+
+Your repository consists of the following components:
+
+    Microservices:
+        BorrowingManagement
+        InventoryManagement
+        OrdersManagement
+
+    Shared Library:
+        CommunicationShared
+
+    Configuration Files:
+        docker-compose.yml
+        docker-compose.override.yml
+        Dockerfiles for each microservice
+
+Current Docker Compose Setup
+
+Your docker-compose.yml defines services for:
+
+    Microservices:
+        borrowingmanagement
+        inventorymanagement
+        ordersmanagement
+
+    Infrastructure:
+        sqldata (MS SQL Server)
+        rabbitmq (RabbitMQ)
+
+Each microservice is built from its respective directory, and the infrastructure services are configured with necessary environment variables and ports.
+
+Transitioning to Kubernetes
+
+To deploy this setup to a local Kubernetes cluster, follow these steps:
+
+    Build Docker Images:
+
+    Ensure all Docker images are built and available locally:
+
+docker-compose build
+
+Push Images to a Registry:
+
+Kubernetes needs access to these images. You can use a local Docker registry or a remote one like Docker Hub.
+
+    Using Docker Hub:
+
+    Tag and push each image:
+
+docker tag borrowingmanagement:latest your-dockerhub-username/borrowingmanagement:latest
+docker push your-dockerhub-username/borrowingmanagement:latest
+
+Repeat for inventorymanagement and ordersmanagement.
+
+Using a Local Registry:
+
+Start a local registry:
+
+docker run -d -p 5000:5000 --name registry registry:2
+
+Tag and push images:
+
+docker tag borrowingmanagement:latest localhost:5000/borrowingmanagement:latest
+docker push localhost:5000/borrowingmanagement:latest
+
+Repeat for the other services.
+
+Create Kubernetes Manifests:
+
+For each service, define Deployment and Service YAML files.
+
+    Deployment Example (borrowingmanagement-deployment.yaml):
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: borrowingmanagement-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: borrowingmanagement
+  template:
+    metadata:
+      labels:
+        app: borrowingmanagement
+    spec:
+      containers:
+      - name: borrowingmanagement
+        image: your-dockerhub-username/borrowingmanagement:latest
+        ports:
+        - containerPort: 80
+
+Service Example (borrowingmanagement-service.yaml):
+
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: borrowingmanagement-service
+    spec:
+      selector:
+        app: borrowingmanagement
+      ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 80
+      type: LoadBalancer
+
+    Replace your-dockerhub-username with your actual Docker Hub username or localhost:5000 if using a local registry.
+
+Deploy Infrastructure Services:
+
+For MS SQL Server and RabbitMQ, create corresponding Kubernetes resources.
+
+    MS SQL Server Deployment (sqldata-deployment.yaml):
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqldata-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqldata
+  template:
+    metadata:
+      labels:
+        app: sqldata
+    spec:
+      containers:
+      - name: sqldata
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          value: "YourStrong!Passw0rd"
+
+MS SQL Server Service (sqldata-service.yaml):
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqldata-service
+spec:
+  selector:
+    app: sqldata
+  ports:
+  - protocol: TCP
+    port: 1433
+    targetPort: 1433
+
+RabbitMQ Deployment (rabbitmq-deployment.yaml):
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+
+RabbitMQ Service (rabbitmq-service.yaml):
+
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: rabbitmq-service
+    spec:
+      selector:
+        app: rabbitmq
+      ports:
+      - protocol: TCP
+        port: 5672
+        targetPort: 5672
+      - protocol: TCP
+        port: 15672
+        targetPort: 15672
+
+Apply Kubernetes Manifests:
+
+Deploy all resources to your Kubernetes cluster:
+
+kubectl apply -f sqldata-deployment.yaml
+kubectl apply -f sqldata-service.yaml
+kubectl apply -f rabbitmq-deployment.yaml
+kubectl apply -f rabbitmq-service.yaml
+kubectl apply -f borrowingmanagement-deployment.yaml
+kubectl apply -f borrowingmanagement-service.yaml
+
+Repeat for inventorymanagement and ordersmanagement.
+
+Verify Deployments:
+
+Check the status of your pods and services:
+
+    kubectl get pods
+    kubectl get services
+
+    Ensure all pods are running, and services are correctly exposed.
+
+Additional Considerations
+
+    Environment Variables:
+
+    Ensure all necessary environment variables (e.g., database connection strings, RabbitMQ settings) are configured in your Kubernetes manifests, similar to your docker-compose.yml.
+
+    Persistent Storage:
+
+    For MS SQL Server, consider setting up PersistentVolume and PersistentVolumeClaim to retain data across pod restarts.
+
+    Networking:
+
+    Verify that your services can communicate within the cluster. You might need to adjust service types or use Ingress for external access.
+
