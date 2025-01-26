@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["InventoryManagement/InventoryManagement.csproj", "InventoryManagement/"]
+COPY ["CommunicationShared/CommunicationShared.csproj", "CommunicationShared/"]
 RUN dotnet restore "./InventoryManagement/InventoryManagement.csproj"
 COPY . .
 WORKDIR "/src/InventoryManagement"

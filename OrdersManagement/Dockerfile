@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["OrdersManagement/OrdersManagement.csproj", "OrdersManagement/"]
+COPY ["CommunicationShared/CommunicationShared.csproj", "CommunicationShared/"]
 RUN dotnet restore "./OrdersManagement/OrdersManagement.csproj"
 COPY . .
 WORKDIR "/src/OrdersManagement"
