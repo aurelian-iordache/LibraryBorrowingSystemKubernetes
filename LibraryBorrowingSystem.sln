@@ -14,6 +14,14 @@ EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{20FD105A-1495-47A8-9A14-FF89C8569491}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{01D72251-67B7-48DC-975A-F3257D71B831}"
+	ProjectSection(SolutionItems) = preProject
+		Migration to Kubernetes-Based Deployment.txt = Migration to Kubernetes-Based Deployment.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{FCA69024-1746-4A44-98D6-E272F977A550}"
+	ProjectSection(SolutionItems) = preProject
+		Deployment\kubernetes-resources.yaml = Deployment\kubernetes-resources.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,243 @@
+# Deployments for the microservices
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: borrowingmanagement-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: borrowingmanagement
+  template:
+    metadata:
+      labels:
+        app: borrowingmanagement
+    spec:
+      containers:
+      - name: borrowingmanagement
+        image: bluesurviver/borrowingmanagement:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventorymanagement-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventorymanagement
+  template:
+    metadata:
+      labels:
+        app: inventorymanagement
+    spec:
+      containers:
+      - name: inventorymanagement
+        image: bluesurviver/inventorymanagement:latest
+        ports:
+        - containerPort: 8081
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordersmanagement-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ordersmanagement
+  template:
+    metadata:
+      labels:
+        app: ordersmanagement
+    spec:
+      containers:
+      - name: ordersmanagement
+        image: bluesurviver/ordersmanagement:latest
+        ports:
+        - containerPort: 8082
+---
+
+# Services for the microservices
+apiVersion: v1
+kind: Service
+metadata:
+  name: borrowingmanagement-service
+spec:
+  selector:
+    app: borrowingmanagement
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventorymanagement-service
+spec:
+  selector:
+    app: inventorymanagement
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8081
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ordersmanagement-service
+spec:
+  selector:
+    app: ordersmanagement
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8082
+  type: ClusterIP
+---
+
+# Deployment for MSSQL Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      containers:
+      - name: mssql
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          value: "yourStrong!Password"
+        - name: MSSQL_PID
+          value: "Express"
+        volumeMounts:
+        - name: mssql-data
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: mssql-data
+        emptyDir: {}
+---
+# Service for MSSQL Server
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-service
+spec:
+  selector:
+    app: mssql
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
+  type: ClusterIP
+---
+
+# Deployment for RabbitMQ
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        ports:
+        - containerPort: 5672  # RabbitMQ default port
+        - containerPort: 15672 # Management UI port
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: "guest"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "guest"
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
+      volumes:
+      - name: rabbitmq-data
+        emptyDir: {}
+---
+# Service for RabbitMQ
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+    - name: amqp
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+    - name: management
+      protocol: TCP
+      port: 15672
+      targetPort: 15672
+  type: ClusterIP
+---
+
+# Ingress configuration
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: library-borrowing-ingress
+  namespace: default
+spec:
+  rules:
+  - host: borrowingmanagement.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: borrowingmanagement-service
+            port:
+              number: 80
+  - host: inventorymanagement.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: inventorymanagement-service
+            port:
+              number: 80
+  - host: ordersmanagement.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ordersmanagement-service
+            port:
+              number: 80
