@@ -1,0 +1,68 @@
+services:
+  # RabbitMQ service
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"  # RabbitMQ main port
+      - "15672:15672" # RabbitMQ management console
+    restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    ports:
+      - "1435:1433" # MSSQL default port
+    environment:
+      SA_PASSWORD: "yourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P yourStrong!Passw0rd -Q 'SELECT 1' -C"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Borrowing Management service
+  borrowingmanagement:
+    image: ${DOCKER_REGISTRY-}borrowingmanagement
+    build:
+      context: .
+      dockerfile: BorrowingManagement/Dockerfile
+    depends_on:
+      - mssql
+      - rabbitmq
+    ports:
+      - "5001:80"
+
+  # Inventory Management service
+  inventorymanagement:
+    image: ${DOCKER_REGISTRY-}inventorymanagement
+    build:
+      context: .
+      dockerfile: InventoryManagement/Dockerfile
+    depends_on:
+      - mssql
+      - rabbitmq
+    ports:
+      - "5002:80"
+
+  # Orders Management service
+  ordersmanagement:
+    image: ${DOCKER_REGISTRY-}ordersmanagement
+    build:
+      context: .
+      dockerfile: OrdersManagement/Dockerfile
+    depends_on:
+      - mssql
+      - rabbitmq
+    ports:
+      - "5003:80"
