@@ -1,6 +1,6 @@
 In order to create the database for the OrderStateDbContext, you need to run the following command in the Visual Studio Developer Power Shell (while the mssql container is running):
 
-PS D:\Development\libraryborrowingsystem\ordersmanagement> dotnet ef database update --context OrderStateDbContext --connection "Server=127.0.0.1,1435;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Password;TrustServerCertificate=True"
+PS D:\Development\libraryborrowingsystem\ordersmanagement> dotnet ef database update --context OrderStateDbContext --connection "Server=127.0.0.1,1433;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Password;TrustServerCertificate=True"
 
 UPDATE: seems it work fine wihtout the connection parameter (PS D:\Development\libraryborrowingsystem\ordersmanagement> dotnet ef database update --context OrderStateDbContext)
 

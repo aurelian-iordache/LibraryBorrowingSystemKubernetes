@@ -20,7 +20,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql
     ports:
-      - "1435:1433" # MSSQL default port
+      - "1433:1433" # MSSQL default port
     environment:
       SA_PASSWORD: "yourStrong!Password"
       ACCEPT_EULA: "Y"
