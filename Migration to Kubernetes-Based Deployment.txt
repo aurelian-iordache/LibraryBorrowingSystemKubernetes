@@ -91,6 +91,8 @@ Check the services through Ingress:
 
     E:\Development\LibraryBorrowingSystemKubernetes\Deployment>kubectl get ingress
 
---- PENDING ---
 Access the services through the Ingress IP address:
-    http://<ingress-ip>/swagger/index.html
+
+    E:\Development\LibraryBorrowingSystemKubernetes\Deployment>kubectl port-forward svc/ordersmanagement-service 8082:80 -n default
+    
+    http://localhost:8082/swagger/index.html

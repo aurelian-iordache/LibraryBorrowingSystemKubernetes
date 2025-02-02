@@ -57,7 +57,7 @@ spec:
       - name: ordersmanagement
         image: bluesurviver/ordersmanagement:latest
         ports:
-        - containerPort: 8082
+        - containerPort: 8080
 ---
 
 # Services for the microservices
@@ -84,7 +84,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8081
+      targetPort: 8080
   type: ClusterIP
 ---
 apiVersion: v1
@@ -97,7 +97,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8082
+      targetPort: 8080
   type: ClusterIP
 ---
 
@@ -210,6 +210,7 @@ metadata:
   name: library-borrowing-ingress
   namespace: default
 spec:
+  ingressClassName: nginx
   rules:
   - host: borrowingmanagement.local
     http:
