@@ -94,8 +94,14 @@ Check the services through Ingress:
 
     E:\Development\LibraryBorrowingSystemKubernetes\Deployment>kubectl get ingress
 
-Access the services through the Ingress IP address:
+Access the services(use separate Command Prompt consoles !):
 
     E:\Development\LibraryBorrowingSystemKubernetes\Deployment>kubectl port-forward svc/ordersmanagement-service 8082:80 -n default
+
+    E:\Development\LibraryBorrowingSystemKubernetes\Deployment> kubectl port-forward svc/rabbitmq-service 8083:15672 -n default
     
+    In browser:
+
     http://localhost:8082/swagger/index.html
+
+    http://localhost:8083

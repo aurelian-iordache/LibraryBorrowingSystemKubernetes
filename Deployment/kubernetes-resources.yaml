@@ -184,7 +184,7 @@ spec:
       - name: rabbitmq-data
         emptyDir: {}
 ---
-# Service for RabbitMQ
+# Service for RabbitMQ (Updated to NodePort)
 apiVersion: v1
 kind: Service
 metadata:
@@ -201,7 +201,8 @@ spec:
       protocol: TCP
       port: 15672
       targetPort: 15672
-  type: ClusterIP
+      nodePort: 30072  # Expose RabbitMQ management UI on NodePort 30072
+  type: NodePort  # Change to NodePort to expose RabbitMQ externally
 ---
 
 # Ingress configuration
