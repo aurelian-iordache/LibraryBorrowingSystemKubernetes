@@ -135,7 +135,7 @@ spec:
       - name: mssql-data
         emptyDir: {}
 ---
-# Service for MSSQL Server
+# Service for MSSQL Server (Updated to NodePort)
 apiVersion: v1
 kind: Service
 metadata:
@@ -147,7 +147,8 @@ spec:
     - protocol: TCP
       port: 1433
       targetPort: 1433
-  type: ClusterIP
+      nodePort: 30033  # The port you will use to access MSSQL externally
+  type: NodePort  # Change to NodePort to expose externally
 ---
 
 # Deployment for RabbitMQ

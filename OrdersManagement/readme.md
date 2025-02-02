@@ -1,6 +1,6 @@
 In order to create the database for the OrderStateDbContext, you need to run the following command in the Visual Studio Developer Power Shell (while the mssql container is running):
 
-PS D:\Development\libraryborrowingsystem\ordersmanagement> dotnet ef database update --context OrderStateDbContext --connection "Server=127.0.0.1,1435;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Passw0rd;TrustServerCertificate=True"
+PS D:\Development\libraryborrowingsystem\ordersmanagement> dotnet ef database update --context OrderStateDbContext --connection "Server=127.0.0.1,1435;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Password;TrustServerCertificate=True"
 
 UPDATE: seems it work fine wihtout the connection parameter (PS D:\Development\libraryborrowingsystem\ordersmanagement> dotnet ef database update --context OrderStateDbContext)
 
@@ -55,7 +55,7 @@ Done.
 
 To check the status of the orders use a command prompt like this (output included):
 
-C:\Users\Work>docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd -S 127.0.0.1,1434 -U sa -P yourStrong!Passw0rd -C
+C:\Users\Work>docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd -S 127.0.0.1,1434 -U sa -P yourStrong!Password -C
 1> USE LibraryBorrowingSystem;
 2> GO
 Changed database context to 'LibraryBorrowingSystem'.

@@ -81,6 +81,9 @@ Check the pods:
 
    E:\Development\LibraryBorrowingSystemKubernetes\Deployment>kubectl get pods
 
+In visual Studio Developer Shell create the database in the SQL pod:
+    PS E:\Development\LibraryBorrowingSystemKubernetes\ordersmanagement> dotnet ef database update --context OrderStateDbContext --connection "Server=127.0.0.1,30033;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Password;TrustServerCertificate=True"
+
 Scale up (increment the number of pods for each service to 5):
     
     E:\Development\LibraryBorrowingSystemKubernetes\Deployment>kubectl scale deployment ordersmanagement-deployment --replicas=5

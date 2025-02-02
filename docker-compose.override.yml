@@ -4,7 +4,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__DefaultConnection=Server=mssql;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Passw0rd;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=mssql;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Password;TrustServerCertificate=True;
     ports:
       - "8080"
       - "8081"
@@ -16,7 +16,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__DefaultConnection=Server=mssql;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Passw0rd;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=mssql;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Password;TrustServerCertificate=True;
     ports:
       - "8080"
       - "8081"
@@ -29,7 +29,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__DefaultConnection=Server=mssql;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Passw0rd;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=mssql;Database=LibraryBorrowingSystem;User Id=sa;Password=yourStrong!Password;TrustServerCertificate=True;
     ports:
       - "8080"
       - "8081"
